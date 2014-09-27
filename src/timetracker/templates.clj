@@ -3,9 +3,8 @@
             [net.cgrand.enlive-html :refer [deftemplate content]]))
 
 (deftemplate tpl-index "public/index.html"
-  [value task]
-  [:#message] (content value)
-  [:#saved] (content task)
-  (println (str "Added " task)) 
-  (mongo/insert! :robots {:name task}))
+  [title]
+  [:#message] (content title)
+  (println  "hit the Index ")) 
+
 
