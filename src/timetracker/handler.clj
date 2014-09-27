@@ -6,7 +6,7 @@
             [timetracker.templates :refer [tpl-index]]
             [timetracker.models :refer [create]]))
 
-(def conn (mongo/make-connection "notes" :host "127.0.0.1" :port 27017))
+(def conn (mongo/make-connection "tasktracker" :host "127.0.0.1" :port 27017))
 (mongo/set-connection! conn)
 
 (defroutes app-routes
