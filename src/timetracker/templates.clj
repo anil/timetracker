@@ -1,10 +1,15 @@
 (ns timetracker.templates
   (:require [somnium.congomongo :as mongo]
-            [net.cgrand.enlive-html :refer [deftemplate content]]))
+            [net.cgrand.enlive-html :as enlive]))
 
-(deftemplate tpl-index "public/index.html"
+(enlive/deftemplate tpl-index "public/index.html"
   [title]
-  [:#message] (content title)
-  (println  "hit the Index ")) 
-
+  [:#message]
+    (enlive/content title)
+  [:table.tasks :tbody :tr]
+    (enlive/clone-for [task (mongo/fetch :tasks)]
+                      [:td.time]
+                         (enlive/content (str (get task :time)))
+                      [:td.task]
+                         (enlive/content (get task :task))))
 

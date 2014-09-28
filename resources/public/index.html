@@ -2,6 +2,35 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
+    <style type="text/css">
+    
+       table.gridtable caption {
+        padding-top: 20px;
+        font-size: 20px;
+       }
+       table.gridtable {
+       	font-family: verdana,arial,sans-serif;
+       	font-size:11px;
+       	color:#333333;
+       	border-width: 1px;
+       	border-color: #666666;
+       	border-collapse: collapse;
+       }
+       table.gridtable th {
+       	border-width: 1px;
+       	padding: 8px;
+       	border-style: solid;
+       	border-color: #666666;
+       	background-color: #dedede;
+       }
+       table.gridtable td {
+       	border-width: 1px;
+       	padding: 8px;
+       	border-style: solid;
+       	border-color: #666666;
+       	background-color: #ffffff;
+       }
+    </style>
     <title>Task Tracker</title>
   </head>
   <body>
@@ -10,6 +39,21 @@
        <label for="task">What's up?</label>
        <input type="text" name="task" />
     </form>
+    <table class="tasks gridtable">
+        <caption>Past Tasks</caption>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Task</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="time">the time</td>
+            <td class="task">the task</td>
+          </tr>
+        </tbody>
+     </table>
   </body>
 </html>
 
