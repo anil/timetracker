@@ -3,6 +3,7 @@
             [compojure.handler :as handler]
             [compojure.route :as route]
             [somnium.congomongo :as mongo]
+            [ring.util.response :as ring]
             [timetracker.templates :refer [tpl-index]]
             [timetracker.models :refer [create]]))
 
@@ -11,7 +12,10 @@
 
 (defroutes app-routes
   (GET "/" [] (tpl-index "Anil's Task Tracker"))
-  (POST "/added" [task] (create task))
+  (POST "/added" [task] 
+      (do  
+          (create task)
+          (ring/redirect "/")))
   (route/resources "/")
   (route/not-found "Not Found"))
 
