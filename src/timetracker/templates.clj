@@ -10,6 +10,8 @@
     (enlive/clone-for [task (mongo/fetch :tasks)]
                       [:td.time]
                          (enlive/content (str (get task :time)))
+                      [:td.project_id]
+                         (enlive/content (get task :project_id))
                       [:td.task]
                          (enlive/content (get task :task))))
 
