@@ -4,7 +4,7 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [compojure "1.1.8"]
                  [enlive "1.1.1"]
-                 [congomongo "0.4.4"]]
+                 [com.novemberain/monger "2.0.0"]]
   :plugins [[lein-ring "0.8.11"]]
   :ring {:handler timetracker.handler/app}
   :profiles

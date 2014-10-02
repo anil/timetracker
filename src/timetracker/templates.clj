@@ -1,5 +1,5 @@
 (ns timetracker.templates
-  (:require [somnium.congomongo :as mongo]
+  (:require [timetracker.models :refer [find_all]] 
             [net.cgrand.enlive-html :as enlive]))
 
 (enlive/deftemplate tpl-index "public/index.html"
@@ -7,7 +7,7 @@
   [:#message]
     (enlive/content title)
   [:table.tasks :tbody :tr]
-    (enlive/clone-for [task (mongo/fetch :tasks)]
+    (enlive/clone-for [task (find_all)]
                       [:td.time]
                          (enlive/content (str (get task :time)))
                       [:td.project_id]

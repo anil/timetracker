@@ -2,13 +2,9 @@
   (:require [compojure.core :refer :all]
             [compojure.handler :as handler]
             [compojure.route :as route]
-            [somnium.congomongo :as mongo]
             [ring.util.response :as ring]
             [timetracker.templates :refer [tpl-index]]
             [timetracker.models :refer [create process]]))
-
-(def conn (mongo/make-connection "tasktracker" :host "127.0.0.1" :port 27017))
-(mongo/set-connection! conn)
 
 (defroutes app-routes
   (GET "/" [] (tpl-index "Anil's Task Tracker"))

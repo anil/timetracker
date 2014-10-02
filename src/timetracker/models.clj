@@ -1,15 +1,31 @@
 (ns timetracker.models
-  (:require [somnium.congomongo :as mongo]))
+  (:require [monger.core :as mg]
+            [monger.collection :as mc]
+            [monger.operators :refer :all])
+  (:import [org.bson.types ObjectId]
+           [com.mongodb DB WriteConcern]))
 
 (defn now [] (new java.util.Date))
 
 (defn create [task]
   (println (str "Added " task " at " (now) ))
-  (mongo/insert! :tasks {:task task, :time (now), :project_id "N/A"}))
+  (let [conn (mg/connect)
+        db   (mg/get-db conn "tasktracker")
+        coll "tasks"]
+        (mc/insert db coll {:task task, :time (now), :project_id "N/A"})))
+
+(defn find_all [] 
+  (let [conn (mg/connect)
+        db   (mg/get-db conn "tasktracker")
+        coll "tasks"]
+        (mc/find-maps db coll )))
 
 (defn process []
-  (println "start post process ...")
-  (let [data (mongo/fetch-one :tasks)]
-        (mongo/update! :tasks data (merge data {:project_id "processed"})))
-  (println "... end  post process.")) 
+   (println "start post process ...")
+   (let [conn (mg/connect)
+        db   (mg/get-db conn "tasktracker")
+        coll "tasks"]
+        (mc/update db coll {} {$set {:project_id "Processed"}} {:multi true})))
+
+
 
