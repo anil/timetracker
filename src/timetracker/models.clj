@@ -1,7 +1,9 @@
 (ns timetracker.models
+  (:refer-clojure :exclude [sort find])
   (:require [monger.core :as mg]
             [monger.collection :as mc]
-            [monger.operators :refer :all])
+            [monger.operators :refer :all]
+            [monger.query :refer :all])
   (:import [org.bson.types ObjectId]
            [com.mongodb DB WriteConcern]))
 
@@ -18,7 +20,10 @@
   (let [conn (mg/connect)
         db   (mg/get-db conn "tasktracker")
         coll "tasks"]
-        (mc/find-maps db coll )))
+   (with-collection db coll
+        (find {})
+         (fields [:task :time :project_id])
+         (sort (array-map :time 1)))))
 
 (defn process []
    (println "start post process ...")
