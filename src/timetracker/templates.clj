@@ -1,5 +1,5 @@
 (ns timetracker.templates
-  (:require [timetracker.models :refer [find_all]] 
+  (:require [timetracker.models :refer [find_all find_project]] 
             [net.cgrand.enlive-html :as enlive]))
 
 (enlive/deftemplate tpl-index "public/index.html"
