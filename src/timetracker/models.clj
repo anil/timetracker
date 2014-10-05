@@ -60,14 +60,14 @@
   (let [f (first tasks)
         s (second tasks)
         r (rest tasks)
-        d (time_difference (get f :time) (get s :time))]
+        d (time_difference (:time f) (:time s))]
     (if (>= (count r) 1)
-      (do (update_duration (get f :_id) (str d))
+      (do (update_duration (:_id f) (str d))
           (process_duration r)))))
 
 (defn process []
   ;(println "process called")
   (doseq [x (read_project_file)]
-    (process_project (get x :text) (get x :code)))
+    (process_project (:text x) (:code x)))
   (process_duration (find_all)))
 
