@@ -3,12 +3,13 @@
             [compojure.handler :as handler]
             [compojure.route :as route]
             [ring.util.response :as ring]
-            [timetracker.templates :refer [tpl-index]]
+            [timetracker.templates :refer [tpl-index tpl-process]]
             [timetracker.models :refer [create process process-project]]))
 
 (defroutes app-routes
   (GET "/" [] (tpl-index "Anil's Task Tracker"))
-  (GET "/process" [] (process) "Processed")
+  (GET "/process" [] (tpl-process))
+  (POST "/process" [] (process) "Processed")
   (POST "/added" [task] 
     (do  
       (create task)

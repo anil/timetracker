@@ -2,6 +2,9 @@
   (:require [timetracker.models :refer [find-all]] 
             [net.cgrand.enlive-html :as enlive]))
 
+
+(enlive/deftemplate tpl-process "public/process.html" [] )
+
 (enlive/deftemplate tpl-index "public/index.html"
   [title]
   [:#message]
