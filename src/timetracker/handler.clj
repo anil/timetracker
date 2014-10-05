@@ -10,9 +10,9 @@
   (GET "/" [] (tpl-index "Anil's Task Tracker"))
   (GET "/process" [] (process) "Processed")
   (POST "/added" [task] 
-      (do  
-          (create task)
-          (ring/redirect "/")))
+    (do  
+      (create task)
+      (ring/redirect "/")))
   (route/resources "/")
   (route/not-found "Not Found"))
 

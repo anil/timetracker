@@ -17,54 +17,40 @@
   (let [conn (mg/connect)
         db   (mg/get-db conn "tasktracker")
         coll "tasks"]
-        (mc/insert db coll {:task task, :time (now), :project_id "N/A", :duration "N/A"})))
+    (mc/insert db coll {:task task, :time (now), 
+                        :project_id "N/A", 
+                        :duration "N/A"})))
 
 (defn find_all [] 
   (let [conn (mg/connect)
         db   (mg/get-db conn "tasktracker")
         coll "tasks"]
-   (with-collection db coll
-        (find {})
-         (fields [:task :time :project_id :duration])
-         (sort (array-map :time 1)))))
-
-(defn find_all_reverse [] 
-  (let [conn (mg/connect)
-        db   (mg/get-db conn "tasktracker")
-        coll "tasks"]
-   (with-collection db coll
-        (find {})
-         (fields [:task :time :project_id :duration])
-         (sort (array-map :time -1)))))
-
-(defn find_project [proj_regex] 
-  (let [conn (mg/connect)
-        db   (mg/get-db conn "tasktracker")
-        coll "tasks"]
-   (with-collection db coll
-        (find {:task {$regex proj_regex}})
-         (fields [:task :time :project_id :_id])
-         (sort (array-map :time 1)))))
+    (with-collection db coll
+      (find {})
+      (fields [:task :time :project_id :duration])
+      (sort (array-map :time 1)))))
 
 (defn process_project [translation_regex code]
-   (let [conn (mg/connect)
+  (let [conn (mg/connect)
         db   (mg/get-db conn "tasktracker")
         coll "tasks"]
-        (mc/update db coll {:task {$regex translation_regex}} {$set {:project_id code}} {:multi true})))
+    (mc/update db coll {:task {$regex translation_regex}}
+                       {$set {:project_id code}} 
+                       {:multi true})))
 
-(defn process_file_line [[text code]] (hash-map :text text :code code))
+(defn process_file_line [[text code]]
+  (hash-map :text text :code code))
 
 (defn read_project_file []
   (with-open [rdr (clojure.java.io/reader "bar.txt")]
-    (doall (map process_file_line (map #(split % #" ")  (line-seq rdr))))
-  ))
+    (doall (map process_file_line (map #(split % #" ")  (line-seq rdr))))))
 
 (defn update_duration [id duration] 
-   (println "update duration called") 
-   (let [conn (mg/connect)
+  (println "update duration called") 
+  (let [conn (mg/connect)
         db   (mg/get-db conn "tasktracker")
         coll "tasks"]
-        (mc/update db coll {:_id id} {$set {:duration duration}} )))
+    (mc/update db coll {:_id id} {$set {:duration duration}} )))
 
 (defn time_difference [time1 time2]
   (t/in-minutes (t/interval (t-c/from-date time1) (t-c/from-date time2))))
@@ -75,14 +61,13 @@
         s (second tasks)
         r (rest tasks)
         d (time_difference (get f :time) (get s :time))]
-        (if (>= (count r) 1)
-            (do (update_duration (get f :_id) (str d))
-               (process_duration r)))))
+    (if (>= (count r) 1)
+      (do (update_duration (get f :_id) (str d))
+          (process_duration r)))))
 
 (defn process []
-    ;(println "process called")
-    (doseq [x (read_project_file)]
-        (process_project (get x :text) (get x :code)))
-    (process_duration (find_all))
- )
+  ;(println "process called")
+  (doseq [x (read_project_file)]
+    (process_project (get x :text) (get x :code)))
+  (process_duration (find_all)))
 
