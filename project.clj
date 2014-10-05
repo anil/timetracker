@@ -4,6 +4,7 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [compojure "1.1.8"]
                  [enlive "1.1.1"]
+                 [clj-time "0.8.0"]
                  [com.novemberain/monger "2.0.0"]]
   :plugins [[lein-ring "0.8.11"]]
   :ring {:handler timetracker.handler/app}
