@@ -15,7 +15,7 @@
   (let [conn (mg/connect)
         db   (mg/get-db conn "tasktracker")
         coll "tasks"]
-        (mc/insert db coll {:task task, :time (now), :project_id "N/A"})))
+        (mc/insert db coll {:task task, :time (now), :project_id "N/A", :duration "N/A"})))
 
 (defn find_all [] 
   (let [conn (mg/connect)
@@ -23,7 +23,7 @@
         coll "tasks"]
    (with-collection db coll
         (find {})
-         (fields [:task :time :project_id])
+         (fields [:task :time :project_id :duration])
          (sort (array-map :time 1)))))
 
 (defn find_project [proj_regex] 
