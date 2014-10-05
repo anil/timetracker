@@ -21,7 +21,7 @@
                         :project_id "N/A", 
                         :duration "N/A"})))
 
-(defn find_all [] 
+(defn find-all [] 
   (let [conn (mg/connect)
         db   (mg/get-db conn "tasktracker")
         coll "tasks"]
@@ -30,44 +30,44 @@
       (fields [:task :time :project_id :duration])
       (sort (array-map :time 1)))))
 
-(defn process_project [translation_regex code]
+(defn process-project [translation-regex code]
   (let [conn (mg/connect)
         db   (mg/get-db conn "tasktracker")
         coll "tasks"]
-    (mc/update db coll {:task {$regex translation_regex}}
+    (mc/update db coll {:task {$regex translation-regex}}
                        {$set {:project_id code}} 
                        {:multi true})))
 
-(defn process_file_line [[text code]]
+(defn process-file-line [[text code]]
   (hash-map :text text :code code))
 
-(defn read_project_file []
+(defn read-project-file []
   (with-open [rdr (clojure.java.io/reader "bar.txt")]
-    (doall (map process_file_line (map #(split % #" ")  (line-seq rdr))))))
+    (doall (map process-file-line (map #(split % #" ")  (line-seq rdr))))))
 
-(defn update_duration [id duration] 
-  (println "update duration called") 
+(defn update-duration [id duration] 
+  ;(println "update duration called") 
   (let [conn (mg/connect)
         db   (mg/get-db conn "tasktracker")
         coll "tasks"]
     (mc/update db coll {:_id id} {$set {:duration duration}} )))
 
-(defn time_difference [time1 time2]
+(defn time-difference [time1 time2]
   (t/in-minutes (t/interval (t-c/from-date time1) (t-c/from-date time2))))
 
-(defn process_duration [tasks]
+(defn process-duration [tasks]
   ;(println "process duration called") 
   (let [f (first tasks)
         s (second tasks)
         r (rest tasks)
-        d (time_difference (:time f) (:time s))]
+        d (time-difference (:time f) (:time s))]
     (if (>= (count r) 1)
-      (do (update_duration (:_id f) (str d))
-          (process_duration r)))))
+      (do (update-duration (:_id f) (str d))
+          (process-duration r)))))
 
 (defn process []
   ;(println "process called")
-  (doseq [x (read_project_file)]
-    (process_project (:text x) (:code x)))
-  (process_duration (find_all)))
+  (doseq [x (read-project-file)]
+    (process-project (:text x) (:code x)))
+  (process-duration (find-all)))
 

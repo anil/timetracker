@@ -1,5 +1,5 @@
 (ns timetracker.templates
-  (:require [timetracker.models :refer [find_all]] 
+  (:require [timetracker.models :refer [find-all]] 
             [net.cgrand.enlive-html :as enlive]))
 
 (enlive/deftemplate tpl-index "public/index.html"
@@ -7,7 +7,7 @@
   [:#message]
     (enlive/content title)
   [:table.tasks :tbody :tr]
-    (enlive/clone-for [task (find_all)]
+    (enlive/clone-for [task (find-all)]
                       [:td.time]
                         (enlive/content (str (get task :time)))
                       [:td.project_id]
