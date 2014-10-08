@@ -1,5 +1,5 @@
 (ns timetracker.templates
-  (:require [timetracker.models :refer [find-all]] 
+  (:require [timetracker.models :refer [find-all-tasks]]
             [net.cgrand.enlive-html :as enlive]))
 
 
@@ -10,13 +10,13 @@
   [:#message]
     (enlive/content title)
   [:table.tasks :tbody :tr]
-    (enlive/clone-for [task (find-all)]
+    (enlive/clone-for [task (find-all-tasks)]
                       [:td.time]
-                        (enlive/content (str (get task :time)))
+                        (enlive/content (str (:time task)))
                       [:td.project_id]
-                        (enlive/content (get task :project_id))
+                        (enlive/content (:project_id task "N/A"))
                       [:td.duration]
-                        (enlive/content (get task :duration))
+                        (enlive/content (str (:duration task "N/A")))
                       [:td.task]
-                        (enlive/content (get task :task))))
+                        (enlive/content (:task task ))))
 

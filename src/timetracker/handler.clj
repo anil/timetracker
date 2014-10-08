@@ -4,14 +4,14 @@
             [compojure.route :as route]
             [ring.util.response :as ring]
             [timetracker.templates :refer [tpl-index tpl-process]]
-            [timetracker.models :refer [create process process-project]]))
+            [timetracker.models :refer [create process-tasks]]))
 
 (defroutes app-routes
   (GET "/" [] (tpl-index "Anil's Task Tracker"))
   (GET "/process" [] (tpl-process))
-  (POST "/process" [] (process) "Processed")
-  (POST "/added" [task] 
-    (do  
+  (POST "/process" [] (process-tasks) "Processed")
+  (POST "/added" [task]
+    (do
       (create task)
       (ring/redirect "/")))
   (route/resources "/")
