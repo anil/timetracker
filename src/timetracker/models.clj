@@ -29,38 +29,42 @@
       (fields [:task :time :project_id :duration])
       (sort (array-map :time 1)))))
 
-(defn process-project [translation-regex code]
+(defn update-task-code [regex-mapping]
   (with-tasks [conn db coll]  
     (mc/update db coll 
-               {:task {$regex translation-regex}}
-               {$set {:project_id code}} 
+               {:task {$regex (:regex regex-mapping)}}
+               {$set {:project_id (:code regex-mapping)}} 
                {:multi true})))
 
-(defn process-file-line [[text code]]
-  (hash-map :text text :code code))
+(defn update-task-codes [regex-mappings]
+  (doseq [regex-mapping regex-mappings]
+    (update-task-code regex-mapping)))
 
-(defn read-project-file [filename]
+(defn parse-regex-mappings [filename]
   (with-open [rdr (clojure.java.io/reader filename)]
-    (doall (map process-file-line (map #(split % #" ")  (line-seq rdr))))))
+    (doall
+      (for [line (line-seq rdr)
+            :let [[text code] (split line #" ")]
+            :when (and text code)]
+        {:regex text :code code}))))
 
-(defn update-duration [id duration] 
+(defn update-task-duration [id duration] 
   (with-tasks [conn db coll]
     (mc/update db coll {:_id id} {$set {:duration duration}} )))
 
 (defn time-difference [time1 time2]
   (t/in-minutes (t/interval (t-c/from-date time1) (t-c/from-date time2))))
 
-(defn process-duration [tasks]
+(defn update-task-durations [tasks]
   (let [f (first tasks)
         s (second tasks)
         r (rest tasks)
         d (time-difference (:time f) (:time s))]
     (when (seq r)
-      (update-duration (:_id f) (str d))
-      (process-duration r))))
+      (update-task-duration (:_id f) (str d))
+      (update-task-durations r))))
 
 (defn process-tasks []
-  (doseq [x (read-project-file "bar.txt")]
-    (process-project (:text x) (:code x)))
-  (process-duration (find-all-tasks)))
+  (update-task-codes (parse-regex-mappings "bar.txt"))
+  (update-task-durations (find-all-tasks)))
 
